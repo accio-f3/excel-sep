@@ -19,6 +19,14 @@ const leftBtn = document.getElementById("left-btn");
 const centerBtn = document.getElementById("center-btn");
 const rightBtn = document.getElementById("right-btn");
 
+// dropdown
+const fontStyleDropdown = document.getElementById("font-style-dropdown");
+const fontSizeDropdown = document.getElementById("font-size-dropdown");
+
+// input tags
+const bgColorInput = document.getElementById("bgColor");
+const fontColorInput = document.getElementById("fontColor");
+
 // cache
 let currentCell;
 let previousCell;
@@ -54,14 +62,14 @@ function setHeaderColor(colId, rowId, color) {
   rowHead.style.backgroundColor = color;
 }
 
-  // button -> boldbtn,italicsbtn
-  // styleProperty -> fontWeight, textdecoration
-  // style -> 'bold,italics
-  // if (currentCell.style.fontWeight === "bold") {
-  //   boldBtn.style.backgroundColor = transparentBlue;
-  // } else {
-  //   boldBtn.style.backgroundColor = transparent;
-  // }
+// button -> boldbtn,italicsbtn
+// styleProperty -> fontWeight, textdecoration
+// style -> 'bold,italics
+// if (currentCell.style.fontWeight === "bold") {
+//   boldBtn.style.backgroundColor = transparentBlue;
+// } else {
+//   boldBtn.style.backgroundColor = transparent;
+// }
 function buttonHighlighter(button, styleProperty, style) {
   if (currentCell.style[styleProperty] === style) {
     button.style.backgroundColor = transparentBlue;
@@ -163,17 +171,43 @@ underlineBtn.addEventListener("click", () => {
 // homework, make these three EventListeners more readable or use a common function for
 // all the style buttons
 
-leftBtn.addEventListener('click',()=>{
-  currentCell.style.textAlign = 'left';
-})
+leftBtn.addEventListener("click", () => {
+  currentCell.style.textAlign = "left";
+});
 
-rightBtn.addEventListener('click',()=>{
-  currentCell.style.textAlign = 'right';
-})
+rightBtn.addEventListener("click", () => {
+  currentCell.style.textAlign = "right";
+});
 
-centerBtn.addEventListener('click',()=>{
-  currentCell.style.textAlign = 'center';
-})
+centerBtn.addEventListener("click", () => {
+  currentCell.style.textAlign = "center";
+});
 
 // Q -> can we use buttonHighlighter for left, right and center?
 // if yes please do
+fontStyleDropdown.addEventListener("change", () => {
+  // event.target ?????? -> fontStyleDropdown
+  currentCell.style.fontFamily = fontStyleDropdown.value;
+});
+
+fontSizeDropdown.addEventListener("change", () => {
+  currentCell.style.fontSize = fontSizeDropdown.value;
+});
+
+// input will take your every action
+bgColorInput.addEventListener("input", () => {
+  currentCell.style.backgroundColor = bgColorInput.value;
+});
+
+fontColorInput.addEventListener("input", () => {
+  currentCell.style.color = fontColorInput.value;
+});
+
+// homework
+// https://stackoverflow.com/questions/2141357/editable-select-element
+
+// Q -> can we use buttonHighlighter for left, right and center?
+// if yes please do
+
+// homework, make these three EventListeners more readable or use a common function for
+// all the style buttons
