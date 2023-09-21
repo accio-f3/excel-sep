@@ -2,14 +2,26 @@
 const COLS = 26;
 const ROWS = 100;
 
+// constants
+const transparent = "transparent";
+const transparentBlue = "#ddddff";
+
 // table components
 const tHeadRow = document.getElementById("table-heading-row");
 const tBody = document.getElementById("table-body");
 const currentCellHeading = document.getElementById("current-cell");
+
+// excel buttons
 const boldBtn = document.getElementById("bold-btn");
+const italicsBtn = document.getElementById("italics-btn");
+const underlineBtn = document.getElementById("underline-btn");
+const leftBtn = document.getElementById("left-btn");
+const centerBtn = document.getElementById("center-btn");
+const rightBtn = document.getElementById("right-btn");
 
 // cache
 let currentCell;
+let previousCell;
 
 function colGen(typeOfCell, tableRow, isInnerText, rowNumber) {
   for (let col = 0; col < COLS; col++) {
@@ -35,20 +47,67 @@ function colGen(typeOfCell, tableRow, isInnerText, rowNumber) {
 // this is for heading
 colGen("th", tHeadRow, true);
 
-function setHeaderColor(colId, rowId) {
+function setHeaderColor(colId, rowId, color) {
   const colHead = document.getElementById(colId);
   const rowHead = document.getElementById(rowId);
-  colHead.style.backgroundColor = "#ddddff";
-  rowHead.style.backgroundColor = "#ddddff";
+  colHead.style.backgroundColor = color;
+  rowHead.style.backgroundColor = color;
+}
+
+  // button -> boldbtn,italicsbtn
+  // styleProperty -> fontWeight, textdecoration
+  // style -> 'bold,italics
+  // if (currentCell.style.fontWeight === "bold") {
+  //   boldBtn.style.backgroundColor = transparentBlue;
+  // } else {
+  //   boldBtn.style.backgroundColor = transparent;
+  // }
+function buttonHighlighter(button, styleProperty, style) {
+  if (currentCell.style[styleProperty] === style) {
+    button.style.backgroundColor = transparentBlue;
+  } else {
+    button.style.backgroundColor = transparent;
+  }
 }
 
 function focusHandler(cell) {
   currentCell = cell;
+  if (previousCell) {
+    // set header colors as transparent
+    setHeaderColor(
+      previousCell.id[0],
+      previousCell.id.substring(1),
+      transparent
+    );
+  }
+  // setting bold button according to cell font weight
+  // if (currentCell.style.fontWeight === "bold") {
+  //   boldBtn.style.backgroundColor = transparentBlue;
+  // } else {
+  //   boldBtn.style.backgroundColor = transparent;
+  // }
+  // function buttonHighlighter(button, styleProperty, style)
+  buttonHighlighter(boldBtn, "fontWeight", "bold");
+  buttonHighlighter(italicsBtn, "fontStyle", "italic");
+  buttonHighlighter(underlineBtn, "textDecoration", "underline");
+  // setting italics button according to cell font style
+  // if (currentCell.style.fontStyle === "italic") {
+  //   italicsBtn.style.backgroundColor = transparentBlue;
+  // } else {
+  //   italicsBtn.style.backgroundColor = transparent;
+  // }
+  // if (currentCell.style.textDecoration === "underline") {
+  //   underlineBtn.style.backgroundColor = transparentBlue;
+  // } else {
+  //   underlineBtn.style.backgroundColor = transparent;
+  // }
+
   //   A1 ->
   // A-> cell.id[0];
   // 11 -> cell.id[0].substring(1)
-  setHeaderColor(cell.id[0], cell.id.substring(1));
+  setHeaderColor(cell.id[0], cell.id.substring(1), transparentBlue);
   currentCellHeading.innerText = cell.id + " " + "selected";
+  previousCell = currentCell;
 }
 
 for (let row = 1; row <= ROWS; row++) {
@@ -66,8 +125,55 @@ for (let row = 1; row <= ROWS; row++) {
   tBody.append(tr);
 }
 
-
 // once you click on any cell
 // headers get highlighted
 // and when you click on any other cell
 // the previous headers color should go away
+
+boldBtn.addEventListener("click", () => {
+  if (currentCell.style.fontWeight === "bold") {
+    currentCell.style.fontWeight = "normal";
+    boldBtn.style.backgroundColor = transparent;
+  } else {
+    currentCell.style.fontWeight = "bold";
+    boldBtn.style.backgroundColor = transparentBlue;
+  }
+});
+
+italicsBtn.addEventListener("click", () => {
+  if (currentCell.style.fontStyle === "italic") {
+    currentCell.style.fontStyle = "normal";
+    italicsBtn.style.backgroundColor = transparent;
+  } else {
+    currentCell.style.fontStyle = "italic";
+    italicsBtn.style.backgroundColor = transparentBlue;
+  }
+});
+
+underlineBtn.addEventListener("click", () => {
+  if (currentCell.style.textDecoration === "underline") {
+    currentCell.style.textDecoration = "none";
+    underlineBtn.style.backgroundColor = transparent;
+  } else {
+    currentCell.style.textDecoration = "underline";
+    underlineBtn.style.backgroundColor = transparentBlue;
+  }
+});
+
+// homework, make these three EventListeners more readable or use a common function for
+// all the style buttons
+
+leftBtn.addEventListener('click',()=>{
+  currentCell.style.textAlign = 'left';
+})
+
+rightBtn.addEventListener('click',()=>{
+  currentCell.style.textAlign = 'right';
+})
+
+centerBtn.addEventListener('click',()=>{
+  currentCell.style.textAlign = 'center';
+})
+
+// Q -> can we use buttonHighlighter for left, right and center?
+// if yes please do
