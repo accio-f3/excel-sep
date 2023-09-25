@@ -18,6 +18,9 @@ const underlineBtn = document.getElementById("underline-btn");
 const leftBtn = document.getElementById("left-btn");
 const centerBtn = document.getElementById("center-btn");
 const rightBtn = document.getElementById("right-btn");
+const cutBtn = document.getElementById('cut-btn');
+const copyBtn = document.getElementById('copy-btn');
+const pasteBtn = document.getElementById('paste-btn');
 
 // dropdown
 const fontStyleDropdown = document.getElementById("font-style-dropdown");
@@ -30,6 +33,8 @@ const fontColorInput = document.getElementById("fontColor");
 // cache
 let currentCell;
 let previousCell;
+let cutCell; // this cutCell will store my cell data;
+let lastPressBtn;
 
 function colGen(typeOfCell, tableRow, isInnerText, rowNumber) {
   for (let col = 0; col < COLS; col++) {
@@ -79,6 +84,7 @@ function buttonHighlighter(button, styleProperty, style) {
 }
 
 function focusHandler(cell) {
+  // console.log(cell.style);
   currentCell = cell;
   if (previousCell) {
     // set header colors as transparent
@@ -211,3 +217,41 @@ fontColorInput.addEventListener("input", () => {
 
 // homework, make these three EventListeners more readable or use a common function for
 // all the style buttons
+
+//     cell1 data -> cell2 data
+//      empty  -> this will be having cell1 data -> in case of cut
+//      cell1data -> cell1data in case of copy
+
+cutBtn.addEventListener('click',()=>{
+  lastPressBtn='cut';
+  cutCell = {
+    text: currentCell.innerText,
+    style: currentCell.style.cssText, // cssText is basically
+    // inLine css
+  }
+  // deleting current cell
+  currentCell.innerText='';
+  currentCell.style.cssText='';
+})
+
+copyBtn.addEventListener('click',()=>{
+  lastPressBtn='copy';
+  cutCell={
+    text: currentCell.innerText,
+    style: currentCell.style.cssText,
+  }
+})
+
+pasteBtn.addEventListener('click',()=>{
+  currentCell.innerText=cutCell.text;
+  currentCell.style=cutCell.style;
+  // currentCell.style.cssText=cutCell.style;
+
+  // i need to cleanup my cutcell object after paste
+  // 
+  if (lastPressBtn === "cut") {
+    cutCell = undefined;
+  }
+})
+
+// emptyObject.property -> undefined
