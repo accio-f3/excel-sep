@@ -35,6 +35,17 @@ let currentCell;
 let previousCell;
 let cutCell; // this cutCell will store my cell data;
 let lastPressBtn;
+let matrix = new Array(ROWS);
+
+for (let row = 0; row < ROWS; row++) {
+  matrix[row] = new Array(COLS);
+  // matrix[0] -> 1st
+  // matrix[1] -> 2nd 
+  // matrix[row] -> matrix[0]-> matrix[99]
+  for(let col=0;col<COLS;col++){
+    matrix[row][col]={};
+  }
+}
 
 function colGen(typeOfCell, tableRow, isInnerText, rowNumber) {
   for (let col = 0; col < COLS; col++) {
@@ -51,6 +62,7 @@ function colGen(typeOfCell, tableRow, isInnerText, rowNumber) {
       // COL -> A,B,C,D
       cell.setAttribute("id", `${String.fromCharCode(col + 65)}${rowNumber}`);
       cell.setAttribute("contenteditable", true);
+      cell.addEventListener('input',updateObjectInMatrix);
       //   event.target is my currentCell
       cell.addEventListener("focus", (event) => focusHandler(event.target));
     }
@@ -59,6 +71,22 @@ function colGen(typeOfCell, tableRow, isInnerText, rowNumber) {
 }
 // this is for heading
 colGen("th", tHeadRow, true);
+
+// colRow -> row,col
+// A1 -> 0,0
+// A2 -> 1,0
+function updateObjectInMatrix() {
+  console.log(matrix[0][0]);
+  let id = currentCell.id;
+  // id[0] -> 'A' -> 'A'.charCodeAt(0) -> 65
+  let col = id[0].charCodeAt(0) - 65;
+  let row = id.substring(1) - 1;
+  matrix[row][col] = {
+    text: currentCell.innerText,
+    style: currentCell.style.cssText,
+    id: id, // why we are storing ids, we will see that later
+  };
+}
 
 function setHeaderColor(colId, rowId, color) {
   const colHead = document.getElementById(colId);
@@ -152,6 +180,7 @@ boldBtn.addEventListener("click", () => {
     currentCell.style.fontWeight = "bold";
     boldBtn.style.backgroundColor = transparentBlue;
   }
+  updateObjectInMatrix();
 });
 
 italicsBtn.addEventListener("click", () => {
@@ -162,6 +191,7 @@ italicsBtn.addEventListener("click", () => {
     currentCell.style.fontStyle = "italic";
     italicsBtn.style.backgroundColor = transparentBlue;
   }
+  updateObjectInMatrix();
 });
 
 underlineBtn.addEventListener("click", () => {
@@ -172,6 +202,7 @@ underlineBtn.addEventListener("click", () => {
     currentCell.style.textDecoration = "underline";
     underlineBtn.style.backgroundColor = transparentBlue;
   }
+  updateObjectInMatrix();
 });
 
 // homework, make these three EventListeners more readable or use a common function for
@@ -179,14 +210,17 @@ underlineBtn.addEventListener("click", () => {
 
 leftBtn.addEventListener("click", () => {
   currentCell.style.textAlign = "left";
+  updateObjectInMatrix();
 });
 
 rightBtn.addEventListener("click", () => {
   currentCell.style.textAlign = "right";
+  updateObjectInMatrix();
 });
 
 centerBtn.addEventListener("click", () => {
   currentCell.style.textAlign = "center";
+  updateObjectInMatrix();
 });
 
 // Q -> can we use buttonHighlighter for left, right and center?
@@ -194,19 +228,23 @@ centerBtn.addEventListener("click", () => {
 fontStyleDropdown.addEventListener("change", () => {
   // event.target ?????? -> fontStyleDropdown
   currentCell.style.fontFamily = fontStyleDropdown.value;
+  updateObjectInMatrix();
 });
 
 fontSizeDropdown.addEventListener("change", () => {
   currentCell.style.fontSize = fontSizeDropdown.value;
+  updateObjectInMatrix();
 });
 
 // input will take your every action
 bgColorInput.addEventListener("input", () => {
   currentCell.style.backgroundColor = bgColorInput.value;
+  updateObjectInMatrix();
 });
 
 fontColorInput.addEventListener("input", () => {
   currentCell.style.color = fontColorInput.value;
+  updateObjectInMatrix();
 });
 
 // homework
@@ -232,6 +270,7 @@ cutBtn.addEventListener('click',()=>{
   // deleting current cell
   currentCell.innerText='';
   currentCell.style.cssText='';
+  updateObjectInMatrix();
 })
 
 copyBtn.addEventListener('click',()=>{
@@ -252,6 +291,7 @@ pasteBtn.addEventListener('click',()=>{
   if (lastPressBtn === "cut") {
     cutCell = undefined;
   }
+  updateObjectInMatrix();
 })
 
 // emptyObject.property -> undefined
