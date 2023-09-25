@@ -21,6 +21,7 @@ const rightBtn = document.getElementById("right-btn");
 const cutBtn = document.getElementById('cut-btn');
 const copyBtn = document.getElementById('copy-btn');
 const pasteBtn = document.getElementById('paste-btn');
+const uploadInput = document.getElementById('upload-input');
 
 // dropdown
 const fontStyleDropdown = document.getElementById("font-style-dropdown");
@@ -76,7 +77,7 @@ colGen("th", tHeadRow, true);
 // A1 -> 0,0
 // A2 -> 1,0
 function updateObjectInMatrix() {
-  console.log(matrix[0][0]);
+  // console.log(matrix[0][0]);
   let id = currentCell.id;
   // id[0] -> 'A' -> 'A'.charCodeAt(0) -> 65
   let col = id[0].charCodeAt(0) - 65;
@@ -94,6 +95,36 @@ function setHeaderColor(colId, rowId, color) {
   colHead.style.backgroundColor = color;
   rowHead.style.backgroundColor = color;
 }
+
+function downloadMatrix() {
+  // 2d matrix into a memory that's accessible outside
+  const matrixString = JSON.stringify(matrix);
+  // matrixString -> into a blob
+  const blob = new Blob([matrixString],{ type: 'application/json'});
+  console.log(blob);
+  const link = document.createElement('a');
+  // createObjectURL converts my blob to link
+  link.href = URL.createObjectURL(blob);
+  link.download = 'table.json';
+  link.click();
+}
+
+function uploadMatrix(event) {
+  const file = event.target.files[0];
+  // FileReader helps me to read my blod
+  if(file){
+    const reader = new FileReader();
+    reader.readAsText(file);
+    // readAsText will trigger onload method
+    // of reader instance
+    reader.onload = function(event){
+      const fileContent=JSON.parse(event.target.result);
+      console.log(fileContent);
+    }
+  }
+}
+
+uploadInput.addEventListener('input',uploadMatrix);
 
 // button -> boldbtn,italicsbtn
 // styleProperty -> fontWeight, textdecoration
