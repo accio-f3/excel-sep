@@ -44,6 +44,7 @@ let lastPressBtn;
 let matrix = new Array(ROWS);
 let numSheets=1; // size
 let currentSheet = 1; // index
+let prevSheet;
 
 function createNewMatrix() {
   for (let row = 0; row < ROWS; row++) {
@@ -130,7 +131,10 @@ function uploadMatrix(event) {
     // of reader instance
     reader.onload = function(event){
       const fileContent=JSON.parse(event.target.result);
-      console.log(fileContent);
+      // console.log(fileContent);
+      // update virtual memory
+      matrix = fileContent;
+      renderMatrix();
     }
   }
 }
@@ -145,6 +149,7 @@ uploadInput.addEventListener('input',uploadMatrix);
 // } else {
 //   boldBtn.style.backgroundColor = transparent;
 // }
+
 function buttonHighlighter(button, styleProperty, style) {
   if (currentCell.style[styleProperty] === style) {
     button.style.backgroundColor = transparentBlue;
@@ -214,6 +219,12 @@ function tableBodyGen(){
 }
 // creating table for the first time
 tableBodyGen();
+
+
+if(localStorage.getItem(arrMatrix)){
+  matrix=JSON.parse(localStorage.getItem(arrMatrix))[0];
+  renderMatrix();
+}
 
 // once you click on any cell
 // headers get highlighted
@@ -349,7 +360,7 @@ function genNextSheetButton(){
   currentSheet=numSheets;
   btn.innerText=`Sheet ${currentSheet}`;
   btn.setAttribute('id',`sheet-${currentSheet}`);
-  btn.setAttribute('onclick','viewSheet(sheet)');
+  btn.setAttribute('onclick','viewSheet(event)');
   buttonContainer.append(btn);
 }
 
@@ -381,14 +392,36 @@ function saveMatrix() {
   }
 }
 
+function renderMatrix() {
+  matrix.forEach((row) => {
+    row.forEach((cellObj) => {
+      if (cellObj.id) {
+        let currentCell = document.getElementById(cellObj.id);
+        currentCell.innerText = cellObj.text;
+        currentCell.style = cellObj.style;
+      }
+    });
+  });
+}
+
 function viewSheet(event){
+  // save prev sheet before doing anything
+  prevSheet=currentSheet;
   currentSheet=event.target.id.split('-')[1];
   let matrixArr = JSON.parse(localStorage.getItem(arrMatrix));
+  // save my matrix in local storage
+  matrixArr[prevSheet-1] = matrix;
+  localStorage.setItem(arrMatrix,JSON.stringify(matrixArr));
+
+  // I have updated my virtual memory
   matrix = matrixArr[currentSheet-1];
   // clean my html table
   tableBodyGen();
   // render the matrix in html
+  renderMatrix();
 }
+
+
 
 // you are trying to save matrix in arrMatrix
 
@@ -408,3 +441,10 @@ function viewSheet(event){
 // sheet-1 -> matrix1
 // sheet-2 -> matrix2
 // sheet-3 -> matrix3
+
+
+// arrMatrix -> [matrix1,matrix2,matrix3];
+
+// matrix2 -> that is virtual memory of my table 2
+
+// matrix = matrix2
