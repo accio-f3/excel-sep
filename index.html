@@ -32,16 +32,25 @@
             <option value="18px">18</option>
         </select>
         <label for="bgColor">bg color</label>
-        <input type="color" id="bgColor"/>
+        <input type="color" id="bgColor" />
 
         <label for="fontColor">font color</label>
-        <input type="color" id="fontColor"/>
+        <input type="color" id="fontColor" />
 
         <button id="cut-btn">Cut</button>
         <button id="copy-btn">Copy</button>
         <button id="paste-btn">Paste</button>
         <button onclick="downloadMatrix()">Download</button>
         <input id="upload-input" type="file" accept=".json" />
+    </div>
+    <h1 id="sheet-no">Sheet No - 1</h1>
+    <div>
+        <button id="save-sheet-btn">Save</button>
+        <button id="add-sheet-btn">Add sheet</button>
+    </div>
+    <br>
+    <div id="button-container">
+        <button id="sheet-1" onclick="viewSheet(event)">Sheet 1</button>
     </div>
     <br>
     <table id="my-table">
